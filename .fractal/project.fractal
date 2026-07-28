@@ -6,7 +6,7 @@
     "prompt": "Build a very simple Meow app with a quick planning stage.",
     "visibility": "public"
   },
-  "graph_hash": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
+  "graph_hash": "sha256:206b6bbcd0603bbc0f58ea86bbb0522277721321fc37ced1896be444e25544b4",
   "graph": {
     "compiler_version": "fractal-harnessc/0.1.0",
     "edges": [
@@ -72,6 +72,11 @@
       },
       {
         "condition": "success",
+        "from": "write_core_tests",
+        "to": "verify.write_core_tests.harness"
+      },
+      {
+        "condition": "success",
         "from": "write_dom_contract_tests",
         "to": "run_test_suite"
       },
@@ -122,11 +127,12 @@
           "wave": 3
         },
         {
-          "mode": "sequential",
+          "mode": "parallel",
           "nodes": [
+            "verify.write_core_tests.harness",
             "write_dom_contract_tests"
           ],
-          "parallel_group": null,
+          "parallel_group": "wave-4",
           "wave": 4
         },
         {
@@ -156,9 +162,9 @@
         }
       ]
     },
-    "graph_hash": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
-    "graph_id": "fg_b5ad4aa59bd4bc48fc944769daa24756",
-    "harness_hash": "sha256:3f00ddddf84c7706e1d979d2530818ee33bd83ec17549e0a76c296038b7ab2a8",
+    "graph_hash": "sha256:206b6bbcd0603bbc0f58ea86bbb0522277721321fc37ced1896be444e25544b4",
+    "graph_id": "fg_4c27fb3e0cc7ee8493a6c51b92b9745a",
+    "harness_hash": "sha256:db442e016e37fc90c1dfa56053ade69b7e0911e581e1cd6652f5a56469f98a92",
     "nodes": [
       {
         "budget": {
@@ -402,6 +408,33 @@
         "capability": "project.tests.execute",
         "execution": {
           "mode": "parallel",
+          "parallel_group": "wave-4",
+          "task_number": "4.1",
+          "wave": 4
+        },
+        "id": "verify.write_core_tests.harness",
+        "instruction": "Re-run the acceptance suite against the produced artifact; fail if any test fails.",
+        "kind": "container",
+        "memory_scopes": [
+          "acceptance:spec",
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "write_core_tests.ready"
+        ],
+        "route_candidates": [
+          "apple-container://project-tests-execute-default"
+        ],
+        "sandbox_profile": "apple-container://local-work-v1"
+      },
+      {
+        "budget": {
+          "timeout_ms": 120000
+        },
+        "capability": "project.tests.execute",
+        "execution": {
+          "mode": "parallel",
           "parallel_group": "wave-5",
           "task_number": "5.2",
           "wave": 5
@@ -454,9 +487,9 @@
         },
         "capability": "code.generate",
         "execution": {
-          "mode": "sequential",
-          "parallel_group": null,
-          "task_number": "4.1",
+          "mode": "parallel",
+          "parallel_group": "wave-4",
+          "task_number": "4.2",
           "wave": 4
         },
         "id": "write_dom_contract_tests",
@@ -476,7 +509,7 @@
         "title": "Write native node:test static DOM-contract tests (AC-3)"
       }
     ],
-    "parent_graph": "sha256:9be27d850e6402a9595964e836b61c1446358999d7d170e51f17b41f57348980",
+    "parent_graph": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
     "schema": "fractal.execution_graph.v1",
     "target": "darwin-arm64",
     "work_hash": "sha256:0204c38a28bcc5db482ffc2cb170d036627d3f52e855f6988d5c88b1b557204d"
@@ -488,8 +521,9 @@
       "implement_app_wiring": {
         "agent_id": "codex",
         "agent_label": "codex",
-        "state": "checked_out",
-        "checked_out_at": "2026-07-28T01:23:23Z"
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:23:23Z",
+        "completed_at": "2026-07-28T01:24:07Z"
       },
       "implement_meow_core": {
         "agent_id": "codex",
@@ -529,11 +563,12 @@
       "write_core_tests": {
         "agent_id": "hermes",
         "agent_label": "hermes",
-        "state": "checked_out",
-        "checked_out_at": "2026-07-28T01:23:23Z"
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:23:23Z",
+        "completed_at": "2026-07-28T01:24:30Z"
       }
     },
-    "updated_at": "2026-07-28T01:23:23Z"
+    "updated_at": "2026-07-28T01:24:30Z"
   },
-  "updated_at": "2026-07-28T01:24:00Z"
+  "updated_at": "2026-07-28T01:24:30Z"
 }
