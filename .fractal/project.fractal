@@ -6,7 +6,7 @@
     "prompt": "Build a very simple Meow app with a quick planning stage.",
     "visibility": "private"
   },
-  "graph_hash": "sha256:6b947c9059029a194467025b9baf3cb4ac3c679f33c5197ee376c26ecac065e2",
+  "graph_hash": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
   "graph": {
     "compiler_version": "fractal-harnessc/0.1.0",
     "edges": [
@@ -62,6 +62,11 @@
       },
       {
         "condition": "success",
+        "from": "scaffold_project",
+        "to": "verify.scaffold_project.harness"
+      },
+      {
+        "condition": "success",
         "from": "write_core_tests",
         "to": "run_test_suite"
       },
@@ -69,8 +74,15 @@
         "condition": "success",
         "from": "write_dom_contract_tests",
         "to": "run_test_suite"
+      },
+      {
+        "condition": "success",
+        "from": "write_dom_contract_tests",
+        "to": "verify.write_dom_contract_tests.harness"
       }
     ],
+    "evolution": 1,
+    "evolution_arm": "grow.verification",
     "execution_flow": {
       "schema": "fractal.execution_flow.v1",
       "waves": [
@@ -94,7 +106,8 @@
           "mode": "parallel",
           "nodes": [
             "implement_meow_core",
-            "implement_ui_shell"
+            "implement_ui_shell",
+            "verify.scaffold_project.harness"
           ],
           "parallel_group": "wave-2",
           "wave": 2
@@ -117,11 +130,12 @@
           "wave": 4
         },
         {
-          "mode": "sequential",
+          "mode": "parallel",
           "nodes": [
-            "run_test_suite"
+            "run_test_suite",
+            "verify.write_dom_contract_tests.harness"
           ],
-          "parallel_group": null,
+          "parallel_group": "wave-5",
           "wave": 5
         },
         {
@@ -142,9 +156,9 @@
         }
       ]
     },
-    "graph_hash": "sha256:6b947c9059029a194467025b9baf3cb4ac3c679f33c5197ee376c26ecac065e2",
-    "graph_id": "fg_53da999499be433f928383cb1c5ee58d",
-    "harness_hash": "sha256:cce24d553db63f24f9e59dd4d3b4a6570670709675a548e85f9ae9f328ce9dc8",
+    "graph_hash": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
+    "graph_id": "fg_b5ad4aa59bd4bc48fc944769daa24756",
+    "harness_hash": "sha256:3f00ddddf84c7706e1d979d2530818ee33bd83ec17549e0a76c296038b7ab2a8",
     "nodes": [
       {
         "budget": {
@@ -306,8 +320,8 @@
         },
         "capability": "project.tests.execute",
         "execution": {
-          "mode": "sequential",
-          "parallel_group": null,
+          "mode": "parallel",
+          "parallel_group": "wave-5",
           "task_number": "5.1",
           "wave": 5
         },
@@ -353,6 +367,60 @@
           "mlx://code-generate-default"
         ],
         "title": "Scaffold repo: package.json with native test script, directories, README"
+      },
+      {
+        "budget": {
+          "timeout_ms": 120000
+        },
+        "capability": "project.tests.execute",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-2",
+          "task_number": "2.3",
+          "wave": 2
+        },
+        "id": "verify.scaffold_project.harness",
+        "instruction": "Re-run the acceptance suite against the produced artifact; fail if any test fails.",
+        "kind": "container",
+        "memory_scopes": [
+          "acceptance:spec",
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "scaffold_project.ready"
+        ],
+        "route_candidates": [
+          "apple-container://project-tests-execute-default"
+        ],
+        "sandbox_profile": "apple-container://local-work-v1"
+      },
+      {
+        "budget": {
+          "timeout_ms": 120000
+        },
+        "capability": "project.tests.execute",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-5",
+          "task_number": "5.2",
+          "wave": 5
+        },
+        "id": "verify.write_dom_contract_tests.harness",
+        "instruction": "Re-run the acceptance suite against the produced artifact; fail if any test fails.",
+        "kind": "container",
+        "memory_scopes": [
+          "acceptance:spec",
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "write_dom_contract_tests.ready"
+        ],
+        "route_candidates": [
+          "apple-container://project-tests-execute-default"
+        ],
+        "sandbox_profile": "apple-container://local-work-v1"
       },
       {
         "budget": {
@@ -408,15 +476,52 @@
         "title": "Write native node:test static DOM-contract tests (AC-3)"
       }
     ],
+    "parent_graph": "sha256:9be27d850e6402a9595964e836b61c1446358999d7d170e51f17b41f57348980",
     "schema": "fractal.execution_graph.v1",
     "target": "darwin-arm64",
-    "work_hash": "sha256:01008b9b17b9c19a33f8c333857bb081c5703c303e746a10eecd7cd6a7b56a41"
+    "work_hash": "sha256:0204c38a28bcc5db482ffc2cb170d036627d3f52e855f6988d5c88b1b557204d"
   },
   "execution": {
     "schema": "fractal.execution_state.v1",
     "phase": "executing",
-    "assignments": {},
-    "updated_at": "2026-07-28T01:21:24Z"
+    "assignments": {
+      "implement_meow_core": {
+        "agent_id": "codex",
+        "agent_label": "codex",
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:22:09Z",
+        "completed_at": "2026-07-28T01:23:21Z"
+      },
+      "implement_ui_shell": {
+        "agent_id": "cursor",
+        "agent_label": "cursor",
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:22:09Z",
+        "completed_at": "2026-07-28T01:22:51Z"
+      },
+      "lead_plan": {
+        "agent_id": "claude",
+        "agent_label": "claude",
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:21:28Z",
+        "completed_at": "2026-07-28T01:21:28Z"
+      },
+      "scaffold_project": {
+        "agent_id": "codex",
+        "agent_label": "codex",
+        "state": "completed",
+        "checked_out_at": "2026-07-28T01:21:28Z",
+        "completed_at": "2026-07-28T01:22:09Z"
+      },
+      "verify.scaffold_project.harness": {
+        "agent_id": "hermes",
+        "agent_label": "hermes",
+        "state": "released",
+        "checked_out_at": "2026-07-28T01:22:09Z",
+        "released_at": "2026-07-28T01:22:09Z"
+      }
+    },
+    "updated_at": "2026-07-28T01:23:21Z"
   },
-  "updated_at": "2026-07-28T01:21:24Z"
+  "updated_at": "2026-07-28T01:23:21Z"
 }
