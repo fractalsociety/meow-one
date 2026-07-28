@@ -4,7 +4,7 @@
     "slug": "meow-one",
     "title": "Meow One",
     "prompt": "Build a very simple Meow app with a quick planning stage.",
-    "visibility": "private"
+    "visibility": "public"
   },
   "graph_hash": "sha256:5903f83674be54c040a4c37e124278da85bc3bfd1b637333b4b9667b2aff8b03",
   "graph": {
@@ -485,6 +485,12 @@
     "schema": "fractal.execution_state.v1",
     "phase": "executing",
     "assignments": {
+      "implement_app_wiring": {
+        "agent_id": "codex",
+        "agent_label": "codex",
+        "state": "checked_out",
+        "checked_out_at": "2026-07-28T01:23:23Z"
+      },
       "implement_meow_core": {
         "agent_id": "codex",
         "agent_label": "codex",
@@ -514,14 +520,20 @@
         "completed_at": "2026-07-28T01:22:09Z"
       },
       "verify.scaffold_project.harness": {
-        "agent_id": "hermes",
-        "agent_label": "hermes",
+        "agent_id": "cursor",
+        "agent_label": "cursor",
         "state": "released",
         "checked_out_at": "2026-07-28T01:22:09Z",
-        "released_at": "2026-07-28T01:22:09Z"
+        "released_at": "2026-07-28T01:23:23Z"
+      },
+      "write_core_tests": {
+        "agent_id": "hermes",
+        "agent_label": "hermes",
+        "state": "checked_out",
+        "checked_out_at": "2026-07-28T01:23:23Z"
       }
     },
-    "updated_at": "2026-07-28T01:23:21Z"
+    "updated_at": "2026-07-28T01:23:23Z"
   },
-  "updated_at": "2026-07-28T01:23:21Z"
+  "updated_at": "2026-07-28T01:24:00Z"
 }
