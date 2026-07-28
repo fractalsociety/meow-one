@@ -1,0 +1,60 @@
+{
+  "schema": "fractal.prd.v1",
+  "title": "Meow — a one-page cat sound web app",
+  "summary": "A very simple, dependency-free web app for anyone who wants a cat on demand: a single page showing a cat face and a 'Meow' button. Each press displays a randomized meow phrase, plays a short visual 'meow' animation, and increments a visible meow counter that persists across page reloads via localStorage. The meow-generation and counting logic lives in a pure ES module so it is unit-testable with Node's native test runner.",
+  "architecture": {
+    "approach": "Static single-page app: plain HTML/CSS plus vanilla ES modules, with all business logic (meow phrase selection, counter, persistence adapter) isolated in a pure core module that runs identically in the browser and under Node's test runner. No build step, no framework, no runtime dependencies; npm is used only to define the test script.",
+    "rationale": "The product is intentionally tiny, so a framework or build pipeline adds risk and zero value. Separating a pure logic module (src/meow.js) from the DOM wiring (src/app.js) makes the observable behaviors — phrase variety, counter arithmetic, persistence — directly verifiable with `node --test` without a browser, which keeps the acceptance criteria machine-checkable while the UI stays a thin, robust layer.",
+    "components": [
+      {
+        "name": "meow-core",
+        "responsibility": "Pure logic: deterministic-seedable random meow phrase selection from a fixed phrase list (never empty, never two identical phrases twice in a row), meow counter (increment, read, reset), and serialization of counter state for a pluggable storage adapter.",
+        "technology": "Vanilla JavaScript ES module (src/meow.js), Node >= 18 compatible"
+      },
+      {
+        "name": "ui-shell",
+        "responsibility": "index.html + styles.css: page structure (cat face, Meow button, phrase display region with aria-live, counter display), responsive centered layout, and a CSS 'meow pulse' animation class.",
+        "technology": "HTML5 + CSS3 (no preprocessors)"
+      },
+      {
+        "name": "app-wiring",
+        "responsibility": "src/app.js: binds the button click and Space/Enter keys to meow-core, renders the phrase and counter into the DOM, toggles the pulse animation, and persists/restores the counter through a localStorage adapter with graceful fallback when storage is unavailable.",
+        "technology": "Vanilla JavaScript ES module loaded via <script type=\"module\">"
+      },
+      {
+        "name": "test-suite",
+        "responsibility": "Unit tests for meow-core covering phrase validity, no-immediate-repeat behavior, counter arithmetic, and storage-adapter round-tripping, wired to `npm test`.",
+        "technology": "Node built-in test runner (node --test) with node:assert/strict, test files under test/"
+      }
+    ]
+  },
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "criterion": "getMeow() always returns a non-empty string from the known phrase list, and two consecutive calls never return the identical phrase.",
+      "verification": "test/meow.test.js: call getMeow() 200 times in a loop, asserting each result is a non-empty string contained in the exported PHRASES array and result[i] !== result[i-1]; passes under `npm test` (node --test)."
+    },
+    {
+      "id": "AC-2",
+      "criterion": "The meow counter starts at 0, increments by exactly 1 per meow, and round-trips through the storage adapter so a restored counter equals the saved value.",
+      "verification": "test/meow.test.js: create a counter, assert value 0, call increment() three times, assert value 3; save via an in-memory storage adapter, create a new counter from the same adapter, assert value 3; corrupt the stored value with 'garbage' and assert a fresh counter falls back to 0. Passes under `npm test`."
+    },
+    {
+      "id": "AC-3",
+      "criterion": "Opening index.html shows a cat face, a Meow button, and a counter reading 0; clicking the button displays a meow phrase in the aria-live region and the counter reads 1.",
+      "verification": "test/dom.test.js: static contract checks with node --test — assert index.html contains an element with id=\"meow-button\", id=\"meow-phrase\" with aria-live attribute, id=\"meow-count\" with initial text '0', and a module script tag for src/app.js; assert src/app.js references those three ids and calls the core increment. Manual spot-check: open index.html and click once."
+    },
+    {
+      "id": "AC-4",
+      "criterion": "The full native test suite passes from a clean checkout with no dependency installation.",
+      "verification": "Run `npm test` in the repository root; exit code 0 with all tests reported passing."
+    }
+  ],
+  "non_goals": [
+    "Audio playback of real meow sounds (visual/text meow only)",
+    "Backend, accounts, or cross-device sync (persistence is localStorage only)",
+    "Frameworks, bundlers, or transpilation (no React/Vite/TypeScript)",
+    "Multiple animals, themes, or settings screens",
+    "Browser-automation E2E tests (DOM contract is verified statically; interaction is unit-tested at the core layer)"
+  ]
+}

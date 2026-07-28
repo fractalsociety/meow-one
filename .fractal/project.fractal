@@ -1,0 +1,422 @@
+{
+  "schema": "fractal.project.v1",
+  "project": {
+    "slug": "meow-one",
+    "title": "Meow One",
+    "prompt": "Build a very simple Meow app with a quick planning stage.",
+    "visibility": "private"
+  },
+  "graph_hash": "sha256:6b947c9059029a194467025b9baf3cb4ac3c679f33c5197ee376c26ecac065e2",
+  "graph": {
+    "compiler_version": "fractal-harnessc/0.1.0",
+    "edges": [
+      {
+        "condition": "success",
+        "from": "final_review",
+        "to": "lead_closeout"
+      },
+      {
+        "condition": "success",
+        "from": "implement_app_wiring",
+        "to": "write_dom_contract_tests"
+      },
+      {
+        "condition": "success",
+        "from": "implement_meow_core",
+        "to": "implement_app_wiring"
+      },
+      {
+        "condition": "success",
+        "from": "implement_meow_core",
+        "to": "write_core_tests"
+      },
+      {
+        "condition": "success",
+        "from": "implement_ui_shell",
+        "to": "implement_app_wiring"
+      },
+      {
+        "condition": "success",
+        "from": "implement_ui_shell",
+        "to": "write_dom_contract_tests"
+      },
+      {
+        "condition": "success",
+        "from": "lead_plan",
+        "to": "scaffold_project"
+      },
+      {
+        "condition": "success",
+        "from": "run_test_suite",
+        "to": "final_review"
+      },
+      {
+        "condition": "success",
+        "from": "scaffold_project",
+        "to": "implement_meow_core"
+      },
+      {
+        "condition": "success",
+        "from": "scaffold_project",
+        "to": "implement_ui_shell"
+      },
+      {
+        "condition": "success",
+        "from": "write_core_tests",
+        "to": "run_test_suite"
+      },
+      {
+        "condition": "success",
+        "from": "write_dom_contract_tests",
+        "to": "run_test_suite"
+      }
+    ],
+    "execution_flow": {
+      "schema": "fractal.execution_flow.v1",
+      "waves": [
+        {
+          "mode": "sequential",
+          "nodes": [
+            "lead_plan"
+          ],
+          "parallel_group": null,
+          "wave": 0
+        },
+        {
+          "mode": "sequential",
+          "nodes": [
+            "scaffold_project"
+          ],
+          "parallel_group": null,
+          "wave": 1
+        },
+        {
+          "mode": "parallel",
+          "nodes": [
+            "implement_meow_core",
+            "implement_ui_shell"
+          ],
+          "parallel_group": "wave-2",
+          "wave": 2
+        },
+        {
+          "mode": "parallel",
+          "nodes": [
+            "implement_app_wiring",
+            "write_core_tests"
+          ],
+          "parallel_group": "wave-3",
+          "wave": 3
+        },
+        {
+          "mode": "sequential",
+          "nodes": [
+            "write_dom_contract_tests"
+          ],
+          "parallel_group": null,
+          "wave": 4
+        },
+        {
+          "mode": "sequential",
+          "nodes": [
+            "run_test_suite"
+          ],
+          "parallel_group": null,
+          "wave": 5
+        },
+        {
+          "mode": "sequential",
+          "nodes": [
+            "final_review"
+          ],
+          "parallel_group": null,
+          "wave": 6
+        },
+        {
+          "mode": "sequential",
+          "nodes": [
+            "lead_closeout"
+          ],
+          "parallel_group": null,
+          "wave": 7
+        }
+      ]
+    },
+    "graph_hash": "sha256:6b947c9059029a194467025b9baf3cb4ac3c679f33c5197ee376c26ecac065e2",
+    "graph_id": "fg_53da999499be433f928383cb1c5ee58d",
+    "harness_hash": "sha256:cce24d553db63f24f9e59dd4d3b4a6570670709675a548e85f9ae9f328ce9dc8",
+    "nodes": [
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "content.analyze",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "6.1",
+          "wave": 6
+        },
+        "id": "final_review",
+        "instruction": "Read fractal-plan.json (the PRD), index.html, styles.css, src/meow.js, src/app.js, README.md, and the test files. Verify every acceptance criterion AC-1 through AC-4 is covered by a passing check, confirm the non-goals were respected (no dependencies in package.json, no frameworks, no audio code), and confirm README.md accurately describes running (open index.html) and testing (`npm test`) the app — update README.md via a small edit if it is inaccurate or missing the persistence behavior. Produce a short written report listing each acceptance criterion with PASS/FAIL and any residual risks (e.g., browsers without localStorage).",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "run_test_suite.ready"
+        ],
+        "route_candidates": [
+          "mlx://content-analyze-default"
+        ],
+        "title": "Review deliverables against PRD and polish README"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-3",
+          "task_number": "3.1",
+          "wave": 3
+        },
+        "id": "implement_app_wiring",
+        "instruction": "Create src/app.js as an ES module importing { createMeowGenerator, createCounter } from './meow.js'. On DOMContentLoaded (or immediately if document.readyState is not 'loading'): build a storage adapter that uses window.localStorage but is wrapped so any thrown error (private mode, disabled storage) degrades to null storage; create the counter with that adapter and render its current value into #meow-count so a persisted count is restored on load; create one generator instance. Clicking #meow-button must: set #meow-phrase textContent to generator.next(), call counter.increment(), render the new count into #meow-count, and re-trigger the .meow-pulse animation on #cat-face (remove the class, force reflow via void element.offsetWidth, re-add it). Also ensure keyboard operability: the native button handles Enter/Space, so attach only a 'click' listener — do not add duplicate keydown handlers that would double-count. Guard all element lookups (if an element is missing, log a console.warn and return without throwing). The file must reference the exact ids meow-button, meow-phrase, meow-count, and cat-face, and must contain no phrase list of its own — all meow content comes from meow.js.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "implement_meow_core.ready",
+          "implement_ui_shell.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Wire UI to core in src/app.js with localStorage persistence"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-2",
+          "task_number": "2.1",
+          "wave": 2
+        },
+        "id": "implement_meow_core",
+        "instruction": "Create src/meow.js as an ES module with these exact exports: (1) `export const PHRASES` — an array of at least 8 distinct non-empty meow strings (e.g. 'Meow!', 'Mrrrow~', 'Meeeeow!!', 'mew', 'MEOW!', 'purrr... meow', 'Mrow?', 'Nyaa~'); (2) `export function createMeowGenerator(rng = Math.random)` returning an object with a `next()` method that returns a phrase from PHRASES chosen via the injected rng, guaranteeing `next()` never returns the same phrase twice in a row (re-draw or offset when a repeat is picked; must be safe even with an adversarial rng that always returns 0); (3) `export function getMeow()` — module-level convenience using a shared default generator, so consecutive top-level calls also never repeat; (4) `export function createCounter(storage = null, key = 'meow-count')` returning { value getter or `get()`, `increment()` which adds exactly 1, persists to storage if provided, and returns the new value, and `reset()` which sets 0 and persists }. `storage` is any object with getItem(key)/setItem(key,value) string methods (localStorage-compatible); on construction the counter loads the stored value, treating missing, non-numeric, negative, or non-integer stored values as 0; all storage calls must be wrapped in try/catch so a throwing storage never breaks the counter (fall back to in-memory). Pure module: no DOM or window references anywhere, must import cleanly under Node 18. Include concise JSDoc on each export.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "scaffold_project.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Implement pure meow-core logic module src/meow.js"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-2",
+          "task_number": "2.2",
+          "wave": 2
+        },
+        "id": "implement_ui_shell",
+        "instruction": "Create index.html and styles.css in the workspace root. index.html: valid HTML5 document titled 'Meow', linking styles.css and loading src/app.js via <script type=\"module\" src=\"src/app.js\"></script> at the end of body. Body must contain, inside a <main> centered container: an element with id=\"cat-face\" showing a cat (emoji \\ud83d\\udc31 or CSS-drawn face) with aria-hidden=\"true\"; a <button id=\"meow-button\" type=\"button\">Meow</button>; a phrase display <p id=\"meow-phrase\" aria-live=\"polite\"></p>; and a counter line reading 'Meows: <span id=\"meow-count\">0</span>'. styles.css: responsive flexbox layout centering content vertically and horizontally on the viewport, large friendly typography, a visually distinct button with hover/active/focus-visible states, and a `.meow-pulse` class defining a short (~300ms) scale-pulse keyframe animation intended for the cat face. Use only these exact ids: cat-face, meow-button, meow-phrase, meow-count. No JavaScript logic in this task beyond the module script tag.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "scaffold_project.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Create index.html and styles.css UI shell"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "control.closeout",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "7.1",
+          "wave": 7
+        },
+        "id": "lead_closeout",
+        "instruction": "Review the finished implementation against .fractal/lead-prd.json. Inspect the changes and verification evidence, run any final checks needed, then write .fractal/closeout.json with schema fractal.closeout.v1, status approved, a non-empty summary, an acceptance array containing every PRD acceptance id with passed=true and concrete evidence, and a risks array. Do not approve if any criterion is unsupported.",
+        "kind": "control",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "final_review.ready"
+        ],
+        "route_candidates": [
+          "control://control-closeout-default"
+        ],
+        "title": "Lead acceptance review and closeout"
+      },
+      {
+        "budget": {
+          "timeout_ms": 5000
+        },
+        "capability": "control.plan",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "0.1",
+          "wave": 0
+        },
+        "id": "lead_plan",
+        "instruction": "The lead-authored .fractal/lead-prd.json and validated task DAG are ready.",
+        "kind": "control",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "route_candidates": [
+          "control://control-plan-default"
+        ],
+        "title": "Lead PRD and architecture approved"
+      },
+      {
+        "budget": {
+          "timeout_ms": 120000
+        },
+        "capability": "project.tests.execute",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "5.1",
+          "wave": 5
+        },
+        "id": "run_test_suite",
+        "instruction": "In the workspace root run `npm test` (which executes `node --test test/`). All tests in test/meow.test.js and test/dom.test.js must pass with exit code 0 and zero failures, verifying acceptance criteria AC-1 (phrase validity and no consecutive repeats), AC-2 (counter arithmetic, persistence round-trip, corrupt-value fallback), AC-3 (DOM contract between index.html and src/app.js), and AC-4 (clean-checkout pass with no dependency install). If any test fails, diagnose whether the defect is in the implementation (src/meow.js, src/app.js, index.html) or an incorrect test assumption, fix the offending file to conform to the PRD contracts (do not weaken assertions to force a pass), and re-run until green. Also run `node --check src/meow.js` and `node --check src/app.js` to confirm both parse cleanly. Report the final test summary output.",
+        "kind": "container",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "write_core_tests.ready",
+          "write_dom_contract_tests.ready"
+        ],
+        "route_candidates": [
+          "apple-container://project-tests-execute-default"
+        ],
+        "sandbox_profile": "apple-container://local-work-v1",
+        "title": "Run npm test and fix until the full native suite passes (AC-1..AC-4)"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "1.1",
+          "wave": 1
+        },
+        "id": "scaffold_project",
+        "instruction": "In the current workspace root, create: (1) package.json with { \"name\": \"meow-app\", \"version\": \"1.0.0\", \"type\": \"module\", \"scripts\": { \"test\": \"node --test test/\" }, \"engines\": { \"node\": \">=18\" } } and no dependencies; (2) empty directories src/ and test/ (add a .gitkeep file in each so they exist); (3) README.md describing the Meow app: what it does (click the Meow button, get a random meow phrase, counter persists via localStorage), how to run it (open index.html in a browser), and how to test it (`npm test`, requires Node 18+, zero dependencies). Do not create any other files.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "lead_plan.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Scaffold repo: package.json with native test script, directories, README"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "parallel",
+          "parallel_group": "wave-3",
+          "task_number": "3.2",
+          "wave": 3
+        },
+        "id": "write_core_tests",
+        "instruction": "Create test/meow.test.js using `import { test, describe } from 'node:test'` and `import assert from 'node:assert/strict'`, importing PHRASES, createMeowGenerator, getMeow, createCounter from '../src/meow.js'. Tests to include: (1) PHRASES has >= 8 entries, all distinct non-empty strings; (2) AC-1: loop 200 iterations calling getMeow(), asserting each result is a non-empty string included in PHRASES and strictly !== the previous iteration's result; (3) createMeowGenerator with an adversarial rng `() => 0` still never repeats consecutively over 50 calls; (4) AC-2: a counter with no storage starts at 0, three increment() calls yield 3, increment() returns the new value each time; (5) AC-2 persistence: build an in-memory adapter { getItem, setItem } over a Map; increment a counter to 3, then construct a NEW counter with the same adapter and key and assert it reads 3; reset() brings it to 0 and the adapter reflects '0'; (6) robustness: adapter pre-seeded with 'garbage', '-5', and '2.7' each yield a fresh counter of 0; an adapter whose getItem/setItem always throw still allows a counter to start at 0 and increment to 1 without throwing. Delete test/.gitkeep if present. The file must pass syntax-check via `node --check test/meow.test.js` but do NOT run the suite in this task.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "implement_meow_core.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Write native node:test unit tests for meow-core (AC-1, AC-2)"
+      },
+      {
+        "budget": {
+          "timeout_ms": 180000
+        },
+        "capability": "code.generate",
+        "execution": {
+          "mode": "sequential",
+          "parallel_group": null,
+          "task_number": "4.1",
+          "wave": 4
+        },
+        "id": "write_dom_contract_tests",
+        "instruction": "Create test/dom.test.js using node:test and node:assert/strict, reading index.html and src/app.js as text with `readFileSync` from 'node:fs' (resolve paths relative to the test file via new URL('../index.html', import.meta.url)). Assert on index.html: contains id=\"meow-button\" on a <button>, contains id=\"meow-phrase\" with an aria-live attribute on the same tag, contains id=\"meow-count\" whose element's initial inner text is exactly '0', contains id=\"cat-face\", and contains a script tag with type=\"module\" and src=\"src/app.js\". Assert on src/app.js: the source text references 'meow-button', 'meow-phrase', 'meow-count', and 'cat-face'; imports from './meow.js'; calls .increment(); and contains no hardcoded meow phrase array (assert it does not contain the substring 'PHRASES ='). Use tolerant regexes (attribute order and quoting may vary), not exact-string HTML matches. The file must pass `node --check` but do NOT run the suite in this task.",
+        "kind": "inference",
+        "memory_scopes": [
+          "work:goal",
+          "workspace:root"
+        ],
+        "requires": [
+          "implement_app_wiring.ready",
+          "implement_ui_shell.ready"
+        ],
+        "route_candidates": [
+          "mlx://code-generate-default"
+        ],
+        "title": "Write native node:test static DOM-contract tests (AC-3)"
+      }
+    ],
+    "schema": "fractal.execution_graph.v1",
+    "target": "darwin-arm64",
+    "work_hash": "sha256:01008b9b17b9c19a33f8c333857bb081c5703c303e746a10eecd7cd6a7b56a41"
+  },
+  "execution": {
+    "schema": "fractal.execution_state.v1",
+    "phase": "executing",
+    "assignments": {},
+    "updated_at": "2026-07-28T01:21:24Z"
+  },
+  "updated_at": "2026-07-28T01:21:24Z"
+}
